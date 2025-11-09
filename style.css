@@ -1,0 +1,97 @@
+:root{
+  --bg:#f7f8fb;
+  --card:#fff;
+  --accent:#1f7aed;
+  --muted:#666;
+}
+*{box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background:var(--bg);
+  color:#111;
+  margin:0;
+  padding:24px;
+}
+.container{
+  max-width:720px;
+  margin:16px auto;
+  background:var(--card);
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 6px 18px rgba(20,20,40,0.06);
+}
+header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:12px;
+}
+h1{margin:0;font-size:1.25rem}
+img{border-radius:50%;object-fit:cover}
+.bold{font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:0.9rem}
+.hidden{display:none}
+.note-area{margin-top:12px}
+.existing-notes-section{margin-bottom:24px}
+.existing-notes-display{
+  width:100%;
+  min-height:150px;
+  max-height:400px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #e6e9ef;
+  background:#f9fafb;
+  font-size:0.95rem;
+  white-space:pre-wrap;
+  word-wrap:break-word;
+  overflow-y:auto;
+  font-family:inherit;
+  color:#333;
+}
+.new-note-section{margin-top:20px}
+label{display:block;margin-bottom:8px;font-size:0.95rem;font-weight:600}
+.help-text{margin-top:4px;margin-bottom:12px}
+textarea{
+  width:100%;
+  min-height:150px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #e6e9ef;
+  font-size:0.95rem;
+  resize:vertical;
+  background:#fff;
+  font-family:inherit;
+}
+textarea:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(31,122,237,0.1);
+}
+.actions{display:flex;gap:8px;margin-top:10px}
+button{
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+button.secondary{
+  background:#ddd;
+  color:#111;
+}
+button:hover{
+  opacity:0.9;
+  transform:translateY(-1px);
+  transition:all 0.2s;
+}
+button:active{
+  transform:translateY(0);
+}
+#status{
+  margin-top:8px;
+  min-height:20px;
+}
+footer{margin-top:18px;text-align:center}

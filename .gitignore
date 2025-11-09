@@ -1,0 +1,13 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Configuration file with personal credentials (students create this)
+config.js
+
+# OS files
+.DS_Store
+Thumbs.db
+

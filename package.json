@@ -1,0 +1,22 @@
+{
+  "name": "gwc-appwrite-notes-workshop",
+  "version": "1.0.0",
+  "description": "GWC Workshop: Google OAuth + Appwrite Notes App",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -p 3000",
+    "dev": "serve -p 3000"
+  },
+  "keywords": [
+    "appwrite",
+    "oauth",
+    "google",
+    "workshop"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
+

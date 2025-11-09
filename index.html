@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NoteBuddy</title>
+  <!-- Prevent favicon 404 error -->
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Appwrite CDN - Load this first, synchronously -->
+  <!-- Using latest stable version: 21.4.0 -->
+  <script 
+    src="https://cdn.jsdelivr.net/npm/appwrite@21.4.0"
+    onerror="console.error('Failed to load Appwrite SDK from CDN. Check your internet connection.')"
+    onload="console.log('Appwrite SDK loaded successfully')">
+  </script>
+  <!-- Configuration file - students must create this from config.example.js -->
+  <script src="config.js"></script>
+  <!-- Our script - waits for Appwrite to load and DOM to be ready -->
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>NoteBuddy | Your Personal Notes</h1>
+      <div id="user-area" class="hidden">
+        <img id="photo" alt="profile photo" width="64" height="64" />
+        <div>
+          <div id="name" class="bold"></div>
+          <div id="email" class="muted small"></div>
+        </div>
+      </div>
+    </header>
+
+    <section id="not-signed-in">
+      <p>Sign in with Google to create and manage your personal notes!</p>
+      <button id="login-btn">Sign in with Google</button>
+    </section>
+
+    <section id="signed-in" class="hidden">
+      <div class="note-area">
+        <div class="existing-notes-section">
+          <label>Your Notes</label>
+          <div id="existing-notes" class="existing-notes-display"></div>
+        </div>
+        <div class="new-note-section">
+          <label for="new-note">Add a new note</label>
+          <p class="help-text muted small">Write something below and save it!</p>
+          <textarea id="new-note" placeholder="Write your new note here..."></textarea>
+          <div class="actions">
+            <button id="save-btn">Save</button>
+            <button id="logout-btn" class="secondary">Log out</button>
+          </div>
+        </div>
+        <p id="status" class="muted small"></p>
+      </div>
+    </section>
+
+    <footer>
+      <p class="muted">Workshop demo: Google OAuth via Appwrite</p>
+    </footer>
+  </main>
+</body>
+</html>
