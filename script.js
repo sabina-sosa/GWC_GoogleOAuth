@@ -1,31 +1,20 @@
 /**
- * GWC Workshop: Google OAuth + Appwrite Notes App
+ * ⋆｡𖦹°⭒˚｡⋆GWC  Appwrite Notes Workshop ⋆｡𖦹°⭒˚｡⋆
  * 
- * SETUP INSTRUCTIONS:
- * 1. Create an Appwrite project at https://cloud.appwrite.io
- * 2. Get your Project ID from the Appwrite dashboard (Settings > General)
- * 3. Create a Database and Collection in Appwrite Console
- * 4. Set up Google OAuth in Appwrite (Auth > Providers > Google)
- * 5. Configure Google Cloud Console OAuth credentials
- * 6. Add your redirect URL in Appwrite (e.g., http://localhost:5500)
- * 7. Replace the values below with your own Appwrite project details
+ * ᯓ★Look at README.md for detailed setup instructions:)
  */
-
-// IMPORTANT: This script waits for Appwrite SDK to load before initializing
-// Do not use window.Appwrite before waitForAppwriteAndInit() runs!
 
 // ============================================================================
 // CONFIGURATION: Load from config.js
 // ============================================================================
-// Configuration is loaded from config.js (which students create from config.example.js)
-// This keeps personal credentials out of the main code
+// Configuration is loaded from config.js. This keeps personal credentials out of the main code
 
-// Check if config.js exists and has valid values
+// Checking if config.js exists and has valid values
 if (typeof APPWRITE_ENDPOINT === 'undefined' || 
     typeof APPWRITE_PROJECT_ID === 'undefined' || 
     typeof NOTES_DATABASE_ID === 'undefined' || 
     typeof NOTES_COLLECTION_ID === 'undefined') {
-  console.error('❌ Configuration Error: config.js not found or incomplete!');
+  console.error('Configuration Error! config.js not found or incomplete!');
   console.error('Please copy config.example.js to config.js and fill in your Appwrite credentials.');
   document.body.innerHTML = `
     <div style="padding: 40px; max-width: 600px; margin: 50px auto; text-align: center;">
@@ -44,8 +33,7 @@ if (typeof APPWRITE_ENDPOINT === 'undefined' ||
   throw new Error('Appwrite configuration not found');
 }
 
-// Validate that students haven't left placeholder values
-// Note: showError() is defined later, so we'll validate after DOM loads
+// Validating that students haven't left placeholder values
 let configValidated = false;
 if (APPWRITE_ENDPOINT.includes('YOUR_') || 
     APPWRITE_PROJECT_ID.includes('YOUR_') || 
@@ -58,7 +46,7 @@ if (APPWRITE_ENDPOINT.includes('YOUR_') ||
 }
 
 // ============================================================================
-// APWRITE CLIENT VARIABLES (will be initialized after SDK loads)
+// APWRITE CLIENT VARIABLES
 // ============================================================================
 // These will be initialized once the Appwrite SDK is loaded
 let client, account, databases;
@@ -66,13 +54,13 @@ let client, account, databases;
 // ============================================================================
 // UI ELEMENTS: References to HTML elements we'll interact with
 // ============================================================================
-// Wait for DOM to be ready before accessing elements
+// Waiting for DOM(Document Object Model) to be ready before accessing elements
 let loginBtn, logoutBtn, saveBtn, newNoteEl, existingNotesEl, nameEl, emailEl, photoEl;
 let userArea, notSignedInSection, signedInSection, statusEl;
 
 /**
  * Initialize Appwrite client and services
- * This must be called after the Appwrite SDK has loaded
+ * This must be called after the Appwrite SDK has been loaded
  */
 function initializeAppwrite() {
   if (!window.Appwrite) {
@@ -81,8 +69,8 @@ function initializeAppwrite() {
   }
   
   try {
-    // The Appwrite Client is the main connection to your Appwrite backend
-    // Think of it as your "phone line" to Appwrite's servers
+    // The Appwrite Client is your apps Wi-Fi password to talk to Appwrite
+    // no connection, no data.
     client = new window.Appwrite.Client()
       .setEndpoint(APPWRITE_ENDPOINT)  // Where Appwrite is hosted
       .setProject(APPWRITE_PROJECT_ID); // Which project to use
@@ -105,8 +93,8 @@ function initializeUIElements() {
   loginBtn = document.getElementById('login-btn');
   logoutBtn = document.getElementById('logout-btn');
   saveBtn = document.getElementById('save-btn');
-  newNoteEl = document.getElementById('new-note'); // Textarea for NEW notes only
-  existingNotesEl = document.getElementById('existing-notes'); // Display area for existing notes
+  newNoteEl = document.getElementById('new-note'); // Textarea for new notes only
+  existingNotesEl = document.getElementById('existing-notes'); // Display area for user's existing notes
   nameEl = document.getElementById('name');
   emailEl = document.getElementById('email');
   photoEl = document.getElementById('photo');
@@ -115,7 +103,7 @@ function initializeUIElements() {
   signedInSection = document.getElementById('signed-in');
   statusEl = document.getElementById('status');
   
-  // Verify critical elements exist
+  // Verifying critical elements exist
   if (!loginBtn) {
     console.error('Login button not found! Check HTML.');
     return false;
@@ -163,14 +151,13 @@ function showSignedOutUI() {
  */
 async function init() {
   try {
-    // Try to get the current user - this will succeed if they're logged in
+    // Try to get the current user, this will succeed if they're logged in
     const user = await account.get();
-    // Success! User is logged in, show their info and notes
+    // Success! User is logged in, show their info and load their notes
     showSignedInUI(user);
     await loadUserNote(user.$id);
   } catch (err) {
-    // No active session - user needs to log in
-    // This is normal for first-time visitors
+    // No active session, user needs to log in
     showSignedOutUI();
   }
 }
@@ -179,13 +166,8 @@ async function init() {
 // LOGIN: Google OAuth via Appwrite
 // ============================================================================
 /**
- * When user clicks "Sign in with Google", redirect them to Google's login page
+ * When user clicks "Sign in with Google", it redirects them to Google's login page
  * After they authenticate, Google redirects back to Appwrite, then Appwrite redirects back here
- * 
- * IMPORTANT: Make sure you've configured:
- * 1. Google OAuth in Appwrite Console (Auth > Providers > Google)
- * 2. Your redirect URL in Appwrite (e.g., http://localhost:5500)
- * 3. Google Cloud Console OAuth credentials
  */
 function setupLoginHandler() {
   if (!loginBtn) {
@@ -217,17 +199,14 @@ function setupLoginHandler() {
       if (statusEl) {
         statusEl.textContent = 'Redirecting to Google...';
       }
-      
-      // createOAuth2Session redirects the browser to Google's login page
-      // After login, Google sends user back to Appwrite, then Appwrite sends them back here
-      // The redirect URL (window.location.href) must match what you set in Appwrite Console
+
       const redirectUrl = window.location.href;
       console.log('Initiating OAuth with redirect URL:', redirectUrl);
       
       account.createOAuth2Session('google', redirectUrl);
       
       // Note: The page will redirect, so code after this won't run
-      // If we get here, something went wrong
+      // If we get here, something went wrong !!(ಥ﹏ಥ)
       console.warn('OAuth redirect did not happen - check Appwrite configuration');
       
     } catch (err) {
@@ -264,7 +243,7 @@ function setupLogoutHandler() {
   
   logoutBtn.addEventListener('click', async () => {
   try {
-    // Delete the current session - this logs them out
+    // Delete the current session, this logs them out
     await account.deleteSession('current');
     showSignedOutUI();
     statusEl.textContent = 'Logged out successfully';
@@ -319,7 +298,7 @@ function setupSaveHandler() {
     const formattedNewContent = `\n\n ${timestamp} \n${newContent}`;
 
     if (list.total === 0) {
-      // No existing note - create a new document
+      // if there is no existing note, create a new document
       // window.Appwrite.ID.unique() generates a unique ID for the document
       await databases.createDocument(
         NOTES_DATABASE_ID, 
@@ -332,12 +311,12 @@ function setupSaveHandler() {
       );
       statusEl.textContent = 'Note created and saved! ✔';
     } else {
-      // User already has a note - append to it
+      // if there is an existing note, append to it
       const docId = list.documents[0].$id;
       const existingContent = list.documents[0].content || '';
       const updatedContent = existingContent + formattedNewContent;
       
-      // Update the document with the combined content
+      // Updating the document with the combined content
       await databases.updateDocument(
         NOTES_DATABASE_ID, 
         NOTES_COLLECTION_ID, 
@@ -349,14 +328,14 @@ function setupSaveHandler() {
       statusEl.textContent = 'Added to your note! ✔';
     }
     
-    // Clear the new note textarea after saving
+    // Clearing the new note textarea after saving
     newNoteEl.value = '';
     
-    // Reload the note to show the updated content in the display area
+    // Reloading the note to show the updated content in the display area
     await loadUserNote(userId);
     
   } catch (err) {
-    // Provide helpful error messages based on what went wrong
+    // Providing helpful error messages based on what went wrong
     let errorMessage = 'Save failed. ';
     
     if (err.message && err.message.includes('not found')) {
@@ -394,17 +373,17 @@ async function loadUserNote(userId) {
     const list = await databases.listDocuments(NOTES_DATABASE_ID, NOTES_COLLECTION_ID, query);
     
     if (list.total > 0) {
-      // Found their note - display it in the read-only area
+      // if their note is found, display it in the read-only area
       const noteContent = list.documents[0].content || '';
       existingNotesEl.textContent = noteContent || 'No notes yet.';
       statusEl.textContent = '';
     } else {
-      // No note yet - show empty display area
+      // if there is no note, show empty display area
       existingNotesEl.textContent = 'No notes yet. Write something below and save it:)';
       statusEl.textContent = '';
     }
   } catch (err) {
-    // Handle different types of errors with helpful messages
+    // Handling different types of errors with helpful messages
     let errorMessage = 'Could not load note:( ';
     
     if (err.message && err.message.includes('not found')) {
@@ -424,12 +403,11 @@ async function loadUserNote(userId) {
 // ERROR HANDLING HELPER: Display user-friendly error messages
 // ============================================================================
 /**
- * Shows error messages to the user in a friendly way
- * Errors are displayed in the status element with a red color
+ * Showing error messages clearly to locate where the error is coming from
  */
 function showError(message) {
   statusEl.textContent = `❌ ${message}`;
-  statusEl.style.color = '#d32f2f'; // Red color for errors
+  statusEl.style.color = '#d32f2f'; 
   statusEl.classList.remove('muted');
   
   // Auto-clear error after 5 seconds
@@ -454,7 +432,7 @@ function showError(message) {
  * the session cookie, so init() will detect the logged-in user
  */
 let appwriteLoadAttempts = 0;
-const MAX_LOAD_ATTEMPTS = 100; // Wait up to 10 seconds (100 * 100ms) - CDN might be slow
+const MAX_LOAD_ATTEMPTS = 100; // Wait up to 10 seconds
 
 function waitForAppwriteAndInit() {
   // Check if config is valid

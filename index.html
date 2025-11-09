@@ -4,17 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>NoteBuddy</title>
-  <!-- Prevent favicon 404 error -->
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="style.css" />
-  <!-- Appwrite CDN - Load this first, synchronously -->
-  <!-- Using latest stable version: 21.4.0 -->
   <script 
     src="https://cdn.jsdelivr.net/npm/appwrite@21.4.0"
     onerror="console.error('Failed to load Appwrite SDK from CDN. Check your internet connection.')"
     onload="console.log('Appwrite SDK loaded successfully')">
   </script>
-  <!-- Configuration file - students must create this from config.example.js -->
+  <!-- Configuration file, must create this from config.example.js before running the app -->
   <script src="config.js"></script>
   <!-- Our script - waits for Appwrite to load and DOM to be ready -->
   <script defer src="script.js"></script>
