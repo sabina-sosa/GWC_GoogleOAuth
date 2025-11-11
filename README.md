@@ -51,12 +51,13 @@ Follow these steps to get your own copy working. You'll need to set up both Appw
 #### ☆Create a Table☆
 
 - Inside your database, click "Create Table"
-- Name it `notes` (or whatever you want really and update `NOTES_COLLECTION_ID` accordingly)
-- Copy the Table ID - also needed this for `NOTES_COLLECTION_ID` in `config.js`
+- Name it `notes` (or whatever you want really and update `NOTES_TABLE_ID` accordingly)
+- Copy the Table ID - also needed this for `NOTES_TABLE_ID` in `config.js`
 
 #### ☆Add Columns to Your Table☆
 
 - Click on your table, then go to the "Columns" tab
+- Click on the "Create Columns" button
 - Add these two columns:
   - **Attribute Name:** `userId` | **Type:** String | **Size:** 255 | **Make it required!**
   - **Attribute Name:** `content` | **Type:** String | **Size:** 10000 | **Make it required!**
@@ -66,7 +67,7 @@ Follow these steps to get your own copy working. You'll need to set up both Appw
 - Go to the "Settings" tab of your table
 - Under "Permissions", add:
   - **Read Access:** `users` (allows logged-in users to read)
-  - **Write Access:** `users` (allows logged-in users to write)
+  - **Delete Access:** `users` (allows logged-in users to delete)
   - **Create Access:** `users` (allows logged-in users to create)
   - **Update Access:** `users` (allows logged-in users to update)
 - Click "Update"
@@ -88,7 +89,7 @@ Follow these steps to get your own copy working. You'll need to set up both Appw
 #### ☆Enable Google+ API☆
 
 - In the left sidebar, go to "APIs & Services" > "Library"
-- Search for "Google+ API" or "People API"
+- Search for "Google+ API" (if that one doesn't work you can also use Google People API)
 - Click on it and click "Enable" (this is to access peoples profile pic, name and email:>)
 
 #### ☆Create OAuth Credentials☆
@@ -105,6 +106,8 @@ Follow these steps to get your own copy working. You'll need to set up both Appw
   - Or check Appwrite Console > Auth > Providers > Google for the exact URL
 - Click "Create"
 - **Copy the Client ID and Client Secret** - you'll need these for Appwrite when enabling Google for authentication.
+**‼️URGENT: COPY YOUR SECRET ID NOW!**
+Once you close this page, *it’s gone for good*, you’ll need to generate a new one (dont ask me how I know T-T)
 
 #### ☆Configure Google OAuth in Appwrite☆
 
@@ -131,7 +134,7 @@ Follow these steps to get your own copy working. You'll need to set up both Appw
 const APPWRITE_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';  // Your endpoint from Appwrite Console
 const APPWRITE_PROJECT_ID = 'your-project-id-here';
 const NOTES_DATABASE_ID = 'your-database-id-here';
-const NOTES_COLLECTION_ID = 'notes';  // Or your collection name/ID
+const NOTES_TABLE_ID = 'notes';  // Or your table name/ID
 ```
 
 #### ☆Where to find these values☆
@@ -139,7 +142,7 @@ const NOTES_COLLECTION_ID = 'notes';  // Or your collection name/ID
 - **APPWRITE_ENDPOINT**: Appwrite Console → Settings → Overview → API Endpoint
 - **APPWRITE_PROJECT_ID**: Appwrite Console → Settings → Overview → Project ID
 - **NOTES_DATABASE_ID**: Appwrite Console → Databases → [Your Database] → Copy ID from URL or Settings
-- **NOTES_COLLECTION_ID**: Appwrite Console → Databases → [Your Database] → [Your Table] → Copy ID from URL or Settings (or use the table name like 'notes')
+- **NOTES_TABLE_ID**: Appwrite Console → Databases → [Your Database] → [Your Table] → Copy ID from URL or Settings (or use the table name like 'notes')
 
 #### ☆!!Important!!☆
 
@@ -176,6 +179,13 @@ serve -p 3000
   npm start
   ```
 
+#### ⭒Option C. Use GitHub pages
+- Push the frontend/ files to a repo (dont use the one I provided).
+- On GitHub, go to Settings → Pages.
+- Choose branch main and directory / (root) or /docs depending on where files are.
+- Save and GitHub will give you a URL like https://yourusername.github.io/your-repo/.
+
+
 **Important Note:** Appwrite OAuth only works if your app is being served from a real local URL, not just opening the HTML file directly!
 
 ### Part 5: Test Your Setup
@@ -207,21 +217,21 @@ serve -p 3000
 - Verify Google OAuth credentials are correct in Appwrite Console
 - Make sure Google Cloud Console has the correct redirect URI (see above)
 
-### "Database or Collection not found"
+### "Database or Table not found"
 
-- Double-check your Database ID and Collection ID in `config.js`
+- Double-check your Database ID and Table ID in `config.js`
 - Make sure the IDs are copied correctly (no extra spaces)
 - Make sure you created `config.js` from `config.example.js` and filled in your values
 
 ### "Permission denied"
 
-- Check your Collection permissions in Appwrite Console
+- Check your Table permissions in Appwrite Console
 - Make sure "users" have read, write, create, and update access
 
 ### Notes not saving/loading
 
 - Check browser console (F12) for detailed error messages
-- Verify your Collection has `userId` and `content` attributes
+- Verify your Table has `userId` and `content` columns
 - Make sure you're logged in (check the header shows your profile)
 
 ### Node.js server issues

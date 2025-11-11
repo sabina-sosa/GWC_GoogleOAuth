@@ -13,7 +13,7 @@
 if (typeof APPWRITE_ENDPOINT === 'undefined' || 
     typeof APPWRITE_PROJECT_ID === 'undefined' || 
     typeof NOTES_DATABASE_ID === 'undefined' || 
-    typeof NOTES_COLLECTION_ID === 'undefined') {
+    typeof NOTES_TABLE_ID === 'undefined') {
   console.error('Configuration Error! config.js not found or incomplete!');
   console.error('Please copy config.example.js to config.js and fill in your Appwrite credentials.');
   document.body.innerHTML = `
@@ -38,7 +38,7 @@ let configValidated = false;
 if (APPWRITE_ENDPOINT.includes('YOUR_') || 
     APPWRITE_PROJECT_ID.includes('YOUR_') || 
     NOTES_DATABASE_ID.includes('YOUR_') || 
-    NOTES_COLLECTION_ID.includes('YOUR_')) {
+    NOTES_TABLE_ID.includes('YOUR_')) {
   console.error('❌ Configuration Error: Please replace placeholder values in config.js with your actual Appwrite credentials!');
   configValidated = false;
 } else {
@@ -291,7 +291,7 @@ function setupSaveHandler() {
       window.Appwrite.Query.equal('userId', userId), 
       window.Appwrite.Query.limit(1)
     ];
-    const list = await databases.listDocuments(NOTES_DATABASE_ID, NOTES_COLLECTION_ID, query);
+    const list = await databases.listDocuments(NOTES_DATABASE_ID, NOTES_TABLE_ID, query);
 
     // Format the new content with a timestamp
     const timestamp = new Date().toLocaleString();
@@ -302,7 +302,7 @@ function setupSaveHandler() {
       // window.Appwrite.ID.unique() generates a unique ID for the document
       await databases.createDocument(
         NOTES_DATABASE_ID, 
-        NOTES_COLLECTION_ID, 
+        NOTES_TABLE_ID, 
         window.Appwrite.ID.unique(), 
         {
           userId,
@@ -319,7 +319,7 @@ function setupSaveHandler() {
       // Updating the document with the combined content
       await databases.updateDocument(
         NOTES_DATABASE_ID, 
-        NOTES_COLLECTION_ID, 
+        NOTES_TABLE_ID, 
         docId, 
         {
           content: updatedContent
@@ -339,11 +339,11 @@ function setupSaveHandler() {
     let errorMessage = 'Save failed. ';
     
     if (err.message && err.message.includes('not found')) {
-      errorMessage += 'Database or Collection not found. Check your Database ID and Collection ID.';
+      errorMessage += 'Database or table not found. Check your Database ID and table ID.';
     } else if (err.message && err.message.includes('permission')) {
-      errorMessage += 'Permission denied. Make sure your Collection permissions allow users to read/write their own documents.';
+      errorMessage += 'Permission denied. Make sure your table permissions allow users to read/write their own documents.';
     } else if (err.message && err.message.includes('attribute')) {
-      errorMessage += 'Database schema error. Make sure your Collection has "userId" and "content" attributes.';
+      errorMessage += 'Database schema error. Make sure your table has "userId" and "content" attributes.';
     } else {
       errorMessage += 'Please check your Appwrite configuration and try again.';
     }
@@ -370,7 +370,7 @@ async function loadUserNote(userId) {
       window.Appwrite.Query.equal('userId', userId), 
       window.Appwrite.Query.limit(1)
     ];
-    const list = await databases.listDocuments(NOTES_DATABASE_ID, NOTES_COLLECTION_ID, query);
+    const list = await databases.listDocuments(NOTES_DATABASE_ID, NOTES_TABLE_ID, query);
     
     if (list.total > 0) {
       // if their note is found, display it in the read-only area
@@ -387,9 +387,9 @@ async function loadUserNote(userId) {
     let errorMessage = 'Could not load note:( ';
     
     if (err.message && err.message.includes('not found')) {
-      errorMessage += 'Database or Collection not found. Check your Database ID and Collection ID in the code.';
+      errorMessage += 'Database or table not found. Check your Database ID and table ID in the code.';
     } else if (err.message && err.message.includes('permission')) {
-      errorMessage += 'Permission denied. Check your Collection permissions in Appwrite Console.';
+      errorMessage += 'Permission denied. Check your table permissions in Appwrite Console.';
     } else {
       errorMessage += 'Please check your Appwrite configuration.';
     }
